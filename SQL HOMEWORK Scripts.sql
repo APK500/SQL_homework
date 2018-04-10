@@ -35,6 +35,8 @@ WHERE first_name = 'Joe';
 
 
 
+
+
 -- 2b: Find all actors whose last name contain the letters `GEN`:
   	
 
@@ -43,11 +45,16 @@ WHERE last_name LIKE '%GEN%';
 
 
 
+
+
+
 -- 2c. Find all actors whose last names contain the letters `LI`. This time, order the rows by last name and first name, in that order:
 
 SELECT last_name, first_name FROM actor
 WHERE last_name LIKE '%LI%';
 Order by last_name, first_name;
+
+
 
 
 
@@ -66,6 +73,41 @@ where country in ('Afghanistan', 'Bangladesh', 'China');
 -- 3A: Add a `middle_name` column to the table `actor`. Position it between `first_name` and `last_name`. 
 -- Hint: you will need to specify the data type. 
 
+ALTER TABLE actor
+ADD COLUMN middle_name VARCHAR(45) not null AFTER first_name;
+
+
+-- NOW MOVE the MIDDLE_NAME column to be after the first_name column
+alter table actor modify middle_name varchar(45) after first_name;
+
+-- VIEW the updated table to make sure middle_name column is in proper position.
+select * from actor;
+
+
+
+
+
+-- 3B: You realize that some of these actors have tremendously long last names. Change the data type of the `middle_name` column to `blobs`.
+-- A BLOB is a binary large object that can hold a variable amount of data,
+-- as stated in the SQL documentation, etc. 
+
+alter table actor
+modify middle_name BLOB;
+
+
+-- verify the table to make sure changes occured.  Although in this case
+-- it's not viewable.  Action ouput prompt confirms it did affect the rows.  So should be OK!
+
+
+select * from actor
+
+
+
+-- 3c. Now delete the `middle_name` column.   *** AFTER all that work--  we are now
+-- asked to DELETE IT!!!!    O WELL   :)
+
+ALTER TABLE actor
+DROP COLUMN middle_name;
 
 
 
