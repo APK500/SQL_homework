@@ -307,13 +307,128 @@ group by c.last_name;
 --    starting with the letters K and Q whose language is English. 
 
 
+select title from film
+where language_id in
+  (select language_id 
+   from language
+		where name = "English" )
+		and (title like "K%") or (title like "Q%");
+
+
+
+
+
+
+-- 7b. Use subqueries to display all actors who appear in the film Alone Trip.
+
+select last_name, first_name
+from actor
+where actor_id in
+	(select actor_id from film_actor
+	where film_id in 
+		(select film_id from film
+		where title = "Alone Trip"));
+
+
+
+-- 7c. You want to run an email marketing campaign in Canada, for which you will 
+-- need the names and email addresses of all Canadian customers. 
+-- Use joins to retrieve this information.
+
+select country, last_name, first_name, email
+from country c
+left join customer cu
+on c.country_id = cu.customer_id
+where country = 'Canada';
+
+
+-- 7d. Sales have been lagging among young families, and you wish to target 
+-- all family movies for a promotion. Identify all movies categorized as family films.
+
+
+select title, category
+from film_list
+where category = 'Family';
+
+
  
  
  
+ -- 7e. Display the most frequently rented movies in descending order.
+ 
+ -- here we have to join on the inventory ID and the rental id:  an INNER JOIN:
+
+select i.film_id, f.title, count(r.inventory_id)
+from inventory i
+Inner Join rental r
+on i.inventory_id = r.inventory_id
+inner join film_text f 
+on i.film_id = f.film_id
+group by r.inventory_id
+order by count(r.inventory_id) desc;
+
  
   	
  
  
+ 
+ -- 7f. Write a query to display how much business, in dollars, each store brought in.
+
+select store.store_id, SUM(amount)
+from store
+INNER JOIN staff
+on store.store_id = staff.store_id
+INNER JOIN payment p 
+on p.staff_id = staff.staff_id
+group by store.store_id
+ORDER BY SUM(amount);
+
+
+-- 7g. Write a query to display for each store its store ID, city, and country.
+
+SELECT s.store_id, city, country
+FROM store s
+INNER JOIN customer cu
+ON s.store_id = cu.store_id
+INNER JOIN staff st
+ON s.store_id = st.store_id
+INNER JOIN address a
+ON cu.address_id = a.address_id
+INNER JOIN city ci
+ON a.city_id = ci.city_id
+INNER JOIN country coun
+ON ci.country_id = coun.country_id;
+where country = 'CANADA' and country = 'Australia';
+
+
+
+
+
+
+
+
+
+-- 7h. List the top five genres in gross revenue in descending order. 
+-- (Hint: you may need to use the following 
+-- tables: category, film_category, inventory, payment, and rental.)
+
+
+SELECT name, SUM(p.amount)
+FROM category c
+INNER JOIN film_category fc
+INNER JOIN inventory i
+ON i.film_id = fc.film_id
+INNER JOIN rental r
+ON r.inventory_id = i.inventory_id
+INNER JOIN payment p
+GROUP BY name
+LIMIT 5;
+
+
+
+
+
+
 
 
 
