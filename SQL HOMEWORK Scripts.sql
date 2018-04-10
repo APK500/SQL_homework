@@ -384,6 +384,12 @@ group by store.store_id
 ORDER BY SUM(amount);
 
 
+
+
+
+
+
+
 -- 7g. Write a query to display for each store its store ID, city, and country.
 
 SELECT s.store_id, city, country
@@ -412,23 +418,21 @@ where country = 'CANADA' and country = 'Australia';
 -- (Hint: you may need to use the following 
 -- tables: category, film_category, inventory, payment, and rental.)
 
-
-SELECT name, SUM(p.amount)
-FROM category c
-INNER JOIN film_category fc
-INNER JOIN inventory i
-ON i.film_id = fc.film_id
-INNER JOIN rental r
-ON r.inventory_id = i.inventory_id
-INNER JOIN payment p
-GROUP BY name
-LIMIT 5;
-
-
-
-
-
-
+select c.name, sum(p.amount)
+from payment p
+	join rental r
+		on (p.rental_id = r.rental_id)
+	join inventory i
+		on (i.inventory_id = r.inventory_id)
+	join film f
+		on (f.film_id = i.film_id)
+	join film_category fc
+		on (fc.film_id = f.film_id)
+	join category c
+		on (c.category_id = fc.category_id)
+	group by c.name
+	ORDER BY sum(p.amount) DESC
+    LIMIT 5;
 
 
 
@@ -437,6 +441,42 @@ LIMIT 5;
 
 
 
+-- 8A:  In your new role as an executive, you would like to have an easy way 
+-- of viewing the Top five genres by gross revenue. 
+-- Use the solution from the problem above to create a view. 
+-- If you haven't solved 7h, you can substitute another query to create a view.
+  	
+
+-- create our view.   Named  "top five genres by rev"
+
+CREATE VIEW top5_genre as
+select c.name, sum(p.amount)
+from payment p
+	join rental r
+		on (p.rental_id = r.rental_id)
+	join inventory i
+		on (i.inventory_id = r.inventory_id)
+	join film f
+		on (f.film_id = i.film_id)
+	join film_category fc
+		on (fc.film_id = f.film_id)
+	join category c
+		on (c.category_id = fc.category_id)
+	group by c.name
+	ORDER BY sum(p.amount) DESC
+    LIMIT 5;
+    
+    
+
+
+
+
+
+
+-- 8B:  How would you display the view that you created in 8a?
+
+
+select * from top5_genre;
 
 
 
@@ -450,9 +490,10 @@ LIMIT 5;
 
 
 
+-- 8c. You find that you no longer need the view top_five_genres. 
+-- Write a query to delete it.
 
-
-
+drop view if exists top5_genre;
 
 
 
