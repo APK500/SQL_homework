@@ -181,7 +181,7 @@ where first_name = 'Harpo' and last_name = 'Williams';
 UPDATE actor
  SET first_name = CASE 
  WHEN first_name = 'HARPO' 
-THEN 'GROUCHO'
+ THEN 'GROUCHO'
 ELSE 'MUCHO GROUCHO'
  END
  WHERE actor_id = 172;
@@ -524,12 +524,4 @@ drop view if exists top5_genre;
 
 
 
-
-
--- 6a from DBost
-select sum(p.amount), c.first_name, c.last_name
-from payment p
-join customer c
-on (c.customer_id = p.customer_id)
-group by c.last_name;
 
